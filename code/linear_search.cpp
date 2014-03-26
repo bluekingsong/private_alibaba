@@ -4,21 +4,20 @@
 using namespace std;
 
 double backtracking_linear_search(
-	void *instance, // user-specified object
-	func_evaluator proc_evaluate, // object-function value evaluator
-	double *x, // current point
+	Evaluator& evaluator,   // class of objective function value evaluation
 	double *xp, // backup place for x
-	double *g, // current gradient
 	double *p, // negative of search direction
-	int n, // number of varialbes
 	double *fx, // current function value at x
 	double c, // sufficient decrease condition threshold
 	double init_step, // initial step length
 	double r, // scale factor in backtracking
 	int *evaluateCnt // counter
 ){
+	double *x=0; //current points
+	int n=evaluator.get_current_parameter(x);
+	double *g=evaluator.get_gradient_vec();
 	double dec=vec_dot(g,p,n);
-	cout<<"unit decrease of g'p="<<dec<<endl;
+	//cout<<"#IN_LINEAR_SEARCH unit decrease of g'p="<<dec<<endl;
 	if(dec<0){ // non suitable step,p is not a descent search direction
 		return -1;
 	}
@@ -26,16 +25,18 @@ double backtracking_linear_search(
 	double alpha=init_step;
 	vec_add(xp,x,p,n,1,-alpha);  // p is the negative of search of direction
 	double old_fx=*fx;
-	*fx=proc_evaluate(instance,xp,g,n);
+	*fx=evaluator.evaluate(xp,g);
 	++(*evaluateCnt);
+	int trials=0;
 	while( *fx > old_fx-alpha*c*dec ){
-		cout<<"-----try step length "<<alpha<<" get obj="<<*fx<<" dec="<<old_fx-*fx<<" require min dec="<<alpha*c*dec<<endl;
+		//cout<<"-----try step length "<<alpha<<" get obj="<<*fx<<" dec="<<old_fx-*fx<<" require min dec="<<alpha*c*dec<<endl;
 		alpha*=r;
 		vec_add(xp,x,p,n,1,-alpha);
-		*fx=proc_evaluate(instance,xp,g,n);
+		*fx=evaluator.evaluate(xp,g);
 		++(*evaluateCnt);
+		++trials;
 	}
-	cout<<"##success linear search, get alpha="<<alpha<<" obj="<<*fx<<" dec="<<old_fx-*fx<<" required min dec="<<alpha*c*dec<<endl;
+	//cout<<"#IN_LINEAR_SEARCH success linear search, get alpha="<<alpha<<" obj="<<*fx<<" dec="<<old_fx-*fx<<" required min dec="<<alpha*c*dec<<" trails="<<trials<<endl;
 	return alpha;
 }
 

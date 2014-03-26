@@ -1,26 +1,49 @@
 #ifndef _ALS_H_
 #define _ALS_H_
-#include <cmath>
+#include "common.h"
+#include <string>
+using namespace std;
 
-struct FeatureNode{
-	int index; // legal index start from 0. -1 means end of the feature vector
-	double value;
+class AlsEvaluator : public Evaluator {
+public:
+	//@prob the alternating least sequare problem
+	//@latentLen number of latent factors(common dimension in matrix decomposition);
+	AlsEvaluator(const Problem &_prob,int latentLen,double _lambda):
+		xLen(_prob.l*latentLen),yLen(_prob.n*latentLen),k(latentLen),lambda(_lambda)
+	{	prob=_prob; };
+	void set_parameter_vec(double *_x,double *_y){
+		x=_x; y=_y;
+	};
+	void set_derivation2FirstSet(bool mark){ derivation2FirstSet=mark; };
+	int get_current_parameter(double *& para)const{
+		if(derivation2FirstSet){	para=x; return xLen;}
+		else{	para=y; return yLen;	};
+	};
+	double evaluate();
+	double evaluate(double *w,double *gradient);
+private:
+	int xLen,yLen,k; //xLen is the length of vectorization of Matrix(x), k is the number of latent factors
+	double *x; // the first subset parameters
+	double *y; // the second subset parameters;
+	double lambda; // regurization parameter
+	bool derivation2FirstSet;
 };
+// prediction, matrix completion
+//@user pointer of user matrix
+//@item pointer of item matrix
+//@k number of the latent factors
+//@i row index(user)
+//@j column index(item)
+double predict_credit(const double *user,const double *item,int k,int i,int j);
+// objective function value
+//@user pointer of user matrix
+//@item pointer of item matrix
+//@k number of latent factors
+//@g gradient vector
+//@data the probelm
+//@derivation2UserPara mark of which subset of parameters we derivate to
+//@lambda regurization parameter
+double als_obj(const double *user,const double *item,int k,double *g,const Problem &data,bool derivation2UserPara,double lambda);
 
-struct Problem{
-	int n,l;  // number of features & number of instances
-	double *y; // label
-	struct FeatureNode **x;
-	double bias;            /* < 0 if no bias term */
-};
-
-double als_obj(const double *user,int userNum,const double *item, int itemNum,int k,double *g,const Probelm &data,bool fixUser);
-/*
-double evaluator_interface(
-	void *instance, // user-specified object
-	double *x, // the current variables
-	double *g, // gradient
-	int n // number of variables
-);
-*/
+void alternating_least_square(const Problem& prob,int latentFactorNum,int maxIter,double objDelta,double lambda,int m,const string& outputPrefix);
 #endif

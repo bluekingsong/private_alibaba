@@ -2,7 +2,26 @@
 #define _LINEAR_SEARCH_H_
 #include "common.h"
 
+// simplest linear search method: backtracking linear search
+// @retval selected step length, negative value means failure to find a proper step length
+// reference: Numerical Optimization(Jorge Nocedal,Stephen J.Wright,1999), Chapter 3, Page41.
+double backtracking_linear_search(
+	Evaluator& evaluator,   // class of objective function value evaluation
+	double *xp, // backup place for x
+	double *p, // negative of search direction
+	double *fx, // current function value at x
+	double c, // sufficient decrease condition threshold
+	double init_step, // initial step length
+	double r, // scale factor in backtracking
+	int *evaluateCnt // counter
+);
+// guess a inital step when use linear search
+// @g, gradient
+// @n, number of variables
+// @iter, optional, current iteration
+double guess_init_step(const double *g,const int n,int iter);
 
+/*
 // define callback evalute function
 // @retval the value of object function at x.
 typedef double (* func_evaluator)(
@@ -11,9 +30,7 @@ typedef double (* func_evaluator)(
 	double *g, // gradient
 	int n // number of variables
 );
-// simplest linear search method: backtracking linear search
-// @retval selected step length, negative value means failure to find a proper step length
-// reference: Numerical Optimization(Jorge Nocedal,Stephen J.Wright,1999), Chapter 3, Page41.
+
 double backtracking_linear_search(
 	void *instance, // user-specified object
 	func_evaluator proc_evaluate, // object-function value evaluator
@@ -28,9 +45,5 @@ double backtracking_linear_search(
 	double r, // scale factor in backtracking
 	int *evaluateCnt  // the counter of call obj-function evaluater
 );
-// guess a inital step when use linear search
-// @g, gradient
-// @n, number of variables
-// @iter, optional, current iteration
-double guess_init_step(const double *g,const int n,int iter);
+*/
 #endif

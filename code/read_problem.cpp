@@ -70,7 +70,7 @@ Problem read_problem(const char *filename)
 		fprintf(stderr,"can't open input file %s\n",filename);
 		exit(1);
 	}
-
+	prob.numSlots=0;
 	prob.l = 0;
 	elements = 0;
 	max_line_len = 1024;
@@ -86,6 +86,7 @@ Problem read_problem(const char *filename)
 			if(p == NULL || *p == '\n') // check '\n' as ' ' may be after the last feature
 				break;
 			elements++;
+			++prob.numSlots;
 		}
 		elements++; // for bias term
 		prob.l++;
@@ -157,5 +158,6 @@ Problem read_problem(const char *filename)
 		prob.n=max_index;
 	printf("number of features=%d\n",prob.n);
 	fclose(fp);
+	free(line);
 	return prob;
 }
