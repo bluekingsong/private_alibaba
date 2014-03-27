@@ -2,19 +2,22 @@
 from sys import argv;
 
 if __name__=="__main__":
-	if len(argv)!=4:
-		print "usage: predict.py score test threshold";
+	if len(argv)<4:
+		print "usage: predict.py score test threshold [max_recall,default 500]";
 	else:
 		threshold=float(argv[3]);
 		predict={};
 		score_filename=argv[1];
+		maxRecall=500;
+		if len(argv)==5:
+			maxRecall=int(argv[4]);
 		for line in open(score_filename):
 			items=line[:-1].split("\t");
 			user=items[0];
 			brands=[(x.split(":")[0],float(x.split(":")[1])) for x in items[1:]];
 			brands.sort(key=lambda x:x[1],reverse=True);
-			for item in brands:
-				if item[1]>threshold:
+			for item in brands[:maxRecall]:
+				if item[1]>=threshold:
 					if user not in predict:
 						predict[user]=set();
 					predict[user].add(item[0]);
@@ -59,5 +62,6 @@ if __name__=="__main__":
 			f.write(content+"\n");
 		f.close();
 		print "precision=",precision,"recall=",recall,"f1=",f1;
+		print "predict file output is temp/predict.txt.\n";
 
 

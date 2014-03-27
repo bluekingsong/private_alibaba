@@ -2,10 +2,10 @@
 from sys import argv;
 from math import log;
 
-cnt=1;
 def load_index_map(filename):
 	indexMap={};
 	indies=[];
+	cnt=1;
 	for line in open(filename):
 		key=line[:-1].split("\t")[0];
 		indexMap[key]=cnt;

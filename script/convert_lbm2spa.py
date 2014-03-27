@@ -8,20 +8,16 @@ import numpy as np;
 from numpy.linalg import norm;
 from sklearn.decomposition import ProjectedGradientNMF;
 
-def convert(filename):
-	m=0;
-	n=0;
+def convert(filename,m,n):
 	row=[];
 	column=[];
 	data=[];
 	for line in open(filename):
 		items=line[:-1].split(" ");
 		i=int(items[0]);
-		m=max(i,m);
 		for item in items[1:]:
 			paras=item.split(":");
 			j=int(paras[0]);
-			n=max(n,j);
 			data.append(float(paras[1]));
 			row.append(i-1);
 			column.append(j-1);
