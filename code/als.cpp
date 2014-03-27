@@ -120,5 +120,7 @@ void alternating_least_square(const Problem& prob,int latentFactorNum,int maxIte
 	}
 	outfile.close();
 	delete[] mem;
+	free(prob.y);
+	free(prob.x);
 };
 

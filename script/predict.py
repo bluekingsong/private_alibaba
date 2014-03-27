@@ -11,7 +11,7 @@ if __name__=="__main__":
 		for line in open(score_filename):
 			items=line[:-1].split("\t");
 			user=items[0];
-			brands=[(x.split(" ")[0],float(x.split(" ")[1])) for x in items[1:]];
+			brands=[(x.split(":")[0],float(x.split(":")[1])) for x in items[1:]];
 			brands.sort(key=lambda x:x[1],reverse=True);
 			for item in brands:
 				if item[1]>threshold:

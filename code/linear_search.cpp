@@ -23,7 +23,9 @@ double backtracking_linear_search(
 	}
 //	for(int i=0;i<5;i++) 		cout<<"x["<<i<<"]="<<x[i]<<" p["<<i<<"]="<<p[i]<<endl; 
 	double alpha=init_step;
-	vec_add(xp,x,p,n,1,-alpha);  // p is the negative of search of direction
+	//vec_add(xp,x,p,n,1,-alpha);  // p is the negative of search of direction
+	//TODO: do it better
+	for(int i=0;i<n;++i) xp[i]=(x[i]-alpha*p[i]<1e-6)?0:(x[i]-alpha*p[i]);
 	double old_fx=*fx;
 	*fx=evaluator.evaluate(xp,g);
 	++(*evaluateCnt);
@@ -31,7 +33,9 @@ double backtracking_linear_search(
 	while( *fx > old_fx-alpha*c*dec ){
 		//cout<<"-----try step length "<<alpha<<" get obj="<<*fx<<" dec="<<old_fx-*fx<<" require min dec="<<alpha*c*dec<<endl;
 		alpha*=r;
-		vec_add(xp,x,p,n,1,-alpha);
+		//vec_add(xp,x,p,n,1,-alpha);
+		//TODO: do it better
+		for(int i=0;i<n;++i) xp[i]=(x[i]-alpha*p[i]<1e-6)?0:(x[i]-alpha*p[i]);
 		*fx=evaluator.evaluate(xp,g);
 		++(*evaluateCnt);
 		++trials;

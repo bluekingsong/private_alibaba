@@ -2,6 +2,9 @@
 #define _COMMON_H_
 #include <cmath>
 #include <cstdlib>
+#include <string>
+#include <map>
+using namespace std;
 
 struct FeatureNode{
 	int index; // legal index start from 0. -1 means end of the feature vector
@@ -14,9 +17,7 @@ struct Problem{
 	struct FeatureNode **x;
 	int numSlots; // total number of FeatureNodes
 	double bias;            /* < 0 if no bias term */
-	~Problem(){
-		free(y); free(x);
-	}
+	//~Problem(){ 	free(y); free(x); 	}
 };
 
 Problem read_problem(const char *filename);
@@ -36,5 +37,6 @@ protected:
 	double lastObjValue;
 };
 
+int load_index_map(const string& filename, map<int,string>& indexMap);
 //double sigmod(double x);
 #endif

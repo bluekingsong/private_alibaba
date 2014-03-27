@@ -86,7 +86,9 @@ void lbfgs(int maxIter,double objDelta,int m,double *mem,Evaluator& evaluator){
 		vec_add(y+n*(k%m),g,xg,n,1,-1);
 		rho[k%m]=1.0/vec_dot(y+n*(k%m),s+n*(k%m),n);
 		//cout<<"rho["<<k%m<<"]="<<rho[k%m]<<endl<<endl;
-		vec_cpy(x,xp,n);
+		//TODO: do it better
+		for(int i=0;i<n;++i) x[i]=xp[i]<1e-6?0:xp[i];
+		//vec_cpy(x,xp,n);
 		++k;
 		++iter;
 		double decrease=last-fx;
