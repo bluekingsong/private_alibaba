@@ -7,14 +7,41 @@ from nnmf import nmf;
 from convert_lbm2spa import convert2spa;
 
 def cos_distance(v1,v2):
-	print v1.shape,"---",v2.shape
-	a=np.dot(v1,v2);
+	#print v1.shape,"---",v2.shape
+	a=np.dot(v1,np.transpose(v2));
 	n1=np.linalg.norm(v1);
 	n2=np.linalg.norm(v2);
 	if(n1*n2<1e-10):
 		return -1;
 		#print "a=%f,n1=%f,n2=%f"%(a,n1,n2);
-	return a/(n1*n2);
+	return a[0,0]/(n1*n2);
+def convert_mat2map(mat,threshold=1):
+	Map={};
+	(m,n)=mat.shape;
+	for i in xrange(m):
+		Map[i]=set();
+		for j in xrange(n):
+			if mat[i,j]>=threshold:
+				Map[i].add(j);
+		if len(Map[i])==0:
+			print "Empty Row",i;
+	return Map;
+def jaccard_sim_dict(Map,threshold=0.2):
+	sim_dict=[];
+	invalid=0;
+	for i in xrange(len(Map)):
+		ui={};
+		sim_dict.append(ui);
+		if len(Map[i])==0:
+			continue;
+		for j in xrange(len(Map)):
+			if i==j:
+				ui[j]=1;
+			else:
+				s=float(len(Map[i].intersection(Map[j])))/len(Map[i].union(Map[j]));
+				if s>=threshold:
+					ui[j]=s;
+	return sim_dict;
 def build_sim_dict(userLatentMat):
 	(m,n)=userLatentMat.shape;
 	sim_dict=[];
@@ -46,15 +73,19 @@ if __name__=="__main__":
 		knn=int(argv[2]);
 		clickMat=convert2spa(argv[1]+".clk.lbm",len(userIndex),len(itemIndex)).todense();
 		buyMat=convert2spa(argv[1]+".buy.lbm",len(userIndex),len(itemIndex)).todense();
-		clickMat[clickMat>100]=100;  ## drop outlier 61/32760=0.00186203
-		clickMat=clickMat/100.0;
-		buyMat[buyMat>16]=16;     ## drop outlier 10/4317=0.00231642
-		buyMat=buyMat/16.0;
-		#UK,KC=nmf(clickMat,max_iter=1000);
-		sim_dict=build_sim_dict(clickMat);
+		#clickMat[clickMat>100]=100;  ## drop outlier 61/32760=0.00186203
+		#clickMat=clickMat/100.0;
+		#buyMat[buyMat>16]=16;     ## drop outlier 10/4317=0.00231642
+		#buyMat=buyMat/16.0;
+		#UK,KC=nmf(clickMat,max_iter=5);
+		#print "UK shape=",UK.shape," clickMat shape=",clickMat.shape;
+		#sim_dict=build_sim_dict(buyMat);
+		sim_dict=jaccard_sim_dict(convert_mat2map(clickMat));
 		fout=open("/tmp/sim_score","w");
 		for i in xrange(len(sim_dict)):
 			usim=sim_dict[i];
+			if len(usim)==0:
+				continue;
 			usim=sorted(usim.items(),key=lambda x:x[1],reverse=True);
 			if usim[0][1]<0:
 				continue;
