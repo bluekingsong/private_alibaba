@@ -34,8 +34,8 @@ if __name__=="__main__":
 				paras=item.split(" ");
 				brands.append((indexMap[paras[0]],paras[1]));
 			brands.sort(key=lambda x:x[0])
-			for brand in brands:  #TODO: log(x+1)
-				content=content+" "+str(brand[0])+":"+str(log(1+float(brand[1])));
+			for brand in brands:
+				content=content+" "+str(brand[0])+":"+brand[1];
 			fout.write(content+"\n");
 		fout.close();
 

@@ -61,7 +61,7 @@ if __name__=="__main__":
 			content=u+"\t"+",".join(items);
 			f.write(content+"\n");
 		f.close();
-		print "precision=",precision,"recall=",recall,"f1=",f1;
+		print "p=%4.2f,r=%4.2f,f1=%4.2f"%(precision*100,recall*100,f1*100);
 		print "predict file output is temp/predict.txt.\n";
 
 

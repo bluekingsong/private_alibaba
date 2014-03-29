@@ -32,7 +32,7 @@ awk -v recordCnt="$records" '{
 			#delete last_month;
 		}
 		last=$1;
-		if($3==1){
+		if($3>=1){
 			score[$2]++;
 #			if(last_month[$3]!=$4){
 #				month[$2]++;

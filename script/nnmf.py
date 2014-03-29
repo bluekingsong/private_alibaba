@@ -8,9 +8,15 @@ from scipy import *;
 import numpy as np;
 from numpy.linalg import norm;
 from sklearn.decomposition import ProjectedGradientNMF;
-from convert_lbm2spa import convert;
+from convert_lbm2spa import convert2spa;
 from common import load_index_map;
 
+def nmf(mat,latentFactorNum=50,tol=1e-8,max_iter=1000):
+	model=ProjectedGradientNMF(n_components=latentFactorNum,init='nndsvd',tol=tol,max_iter=max_iter);
+	print "nnmf start:",datetime.now();
+	W,H=model.fit_transform(mat);
+	print "nnmf end:",datetime.now();
+	return W,H;
 if __name__=="__main__":
 	if len(argv)!=3:
 		print "usage:",argv[0],"datafile_prefix threshold";

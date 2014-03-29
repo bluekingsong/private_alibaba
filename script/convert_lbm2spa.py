@@ -8,7 +8,7 @@ import numpy as np;
 from numpy.linalg import norm;
 from sklearn.decomposition import ProjectedGradientNMF;
 
-def convert(filename,m,n):
+def convert2spa(filename,m,n):
 	row=[];
 	column=[];
 	data=[];
