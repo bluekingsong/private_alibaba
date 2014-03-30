@@ -2,7 +2,7 @@
 from sys import argv;
 from math import log;
 from datetime import datetime;
-from scipy.sparse import csc_matrix;
+from scipy.sparse import csc_matrix,csr_matrix;
 from scipy import *;
 import numpy as np;
 from numpy.linalg import norm;
@@ -19,9 +19,9 @@ def convert2spa(filename,m,n):
 			paras=item.split(":");
 			j=int(paras[0]);
 			data.append(float(paras[1]));
-			row.append(i-1);
-			column.append(j-1);
-	return csc_matrix((array(data),(array(row),array(column))),shape=(m,n));
+			row.append(i);
+			column.append(j);
+	return csr_matrix((array(data),(array(row),array(column))),shape=(m,n));
 
 if __name__=="__main__":
 	if len(argv)!=2:

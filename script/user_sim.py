@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from sys import argv;
 from math import exp;
+from datetime import datetime;
 from common import load_index_map;
 import numpy as np;
 from nnmf import nmf;
@@ -42,7 +43,7 @@ def jaccard_sim_dict(Map,threshold=0.2):
 				if s>=threshold:
 					ui[j]=s;
 	return sim_dict;
-def build_sim_dict(userLatentMat):
+def build_cos_distance(userLatentMat):
 	(m,n)=userLatentMat.shape;
 	sim_dict=[];
 	memo={};
@@ -59,8 +60,16 @@ def build_sim_dict(userLatentMat):
 				ui[j]=memo[(i,j)];
 			else:
 				ui[j]=cos_distance(userLatentMat[i,:],userLatentMat[j,:]);
+				if ui[j]>1+1e-6:
+					print "Error cos result for index=",i,"cos=",ui[j];
 				memo[(j,i)]=ui[j];
-	print "invalid user parameter vectors:",invalidCnt;
+		##TODO: debug
+		#if i==100:
+		#	break;
+		if i%200==0:
+			print "building similar dict,progress:",i,"time:",datetime.now();
+	if invalidCnt>0:
+		print "invalid row parameter vectors:",invalidCnt;
 	return sim_dict;
 
 if __name__=="__main__":
@@ -79,7 +88,7 @@ if __name__=="__main__":
 		#buyMat=buyMat/16.0;
 		#UK,KC=nmf(clickMat,max_iter=5);
 		#print "UK shape=",UK.shape," clickMat shape=",clickMat.shape;
-		#sim_dict=build_sim_dict(buyMat);
+		#sim_dict=build_cos_distance(buyMat);
 		sim_dict=jaccard_sim_dict(convert_mat2map(clickMat));
 		fout=open("/tmp/sim_score","w");
 		for i in xrange(len(sim_dict)):

@@ -5,12 +5,12 @@ from math import log;
 def load_index_map(filename):
 	indexMap={};
 	indies=[];
-	cnt=1;
+	cnt=0;
 	for line in open(filename):
 		key=line[:-1].split("\t")[0];
 		indexMap[key]=cnt;
-		cnt+=1;
 		indies.append(key);
+		cnt+=1;
 	return indexMap,indies;
 
 

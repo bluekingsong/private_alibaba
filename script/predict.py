@@ -53,6 +53,7 @@ if __name__=="__main__":
 			for item in buy[u]:
 				if item in predict[u]:
 					hitcnt+=1;
+		print "ground truths=",bbrands,"recall hits=",hitcnt;
 		recall=float(hitcnt)/bbrands;
 		f1=2*precision*recall/(precision+recall);
 		f=open("temp/predict.txt","w");

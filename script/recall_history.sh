@@ -1,7 +1,7 @@
 #!/bin/bash
-if [ $# -ne 1 ]
+if [ $# -lt 1 ]
 then
-	echo "usage:$0 train_data"
+	echo "usage:$0 train_data [click_weight,defalut 0]"
 	exit 1;
 fi;
 userfile="data/all.user";
@@ -12,7 +12,12 @@ then
 	exit 1;
 fi;
 train_data=$1;
-awk -v recordCnt="$records" '{
+clk_weight=0;
+if [ $# -eq 2 ]
+then
+	clk_weight=$2;
+fi;
+awk -v clk_weight="$clk_weight" '{
 	if(FILENAME==ARGV[1]){
 		users[$1];
 	}else if(FILENAME==ARGV[2]){
@@ -26,7 +31,7 @@ awk -v recordCnt="$records" '{
 				content=content"\t"i":"score[i];
 			}
 			if(recalls>0)
-				print content > "/tmp/score_history";
+				print content > "/tmp/history_score";
 			delete score;
 			#delete month;
 			#delete last_month;
@@ -38,11 +43,13 @@ awk -v recordCnt="$records" '{
 #				month[$2]++;
 #				last_month[$2]=$4;
 #			}
+		}else if(clk_weight>0){
+			score[$2]+=clk_weight;
 		}
 	}
 }END{
 	#print "maxium buy brands:"maxBuy;
 }' $userfile $itemfile $train_data  #> "/tmp/score_history";
-echo "score file is /tmp/score_history";
-head /tmp/score_history
+echo "score file is /tmp/history_score";
+#head /tmp/history_score
 
