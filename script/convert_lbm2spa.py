@@ -8,7 +8,7 @@ import numpy as np;
 from numpy.linalg import norm;
 from sklearn.decomposition import ProjectedGradientNMF;
 
-def convert2spa(filename,m,n):
+def convert2spa(filename,m,n,matType="csr"):
 	row=[];
 	column=[];
 	data=[];
@@ -21,7 +21,10 @@ def convert2spa(filename,m,n):
 			data.append(float(paras[1]));
 			row.append(i);
 			column.append(j);
-	return csr_matrix((array(data),(array(row),array(column))),shape=(m,n));
+	if matType == "csr":
+		return csr_matrix((array(data),(array(row),array(column))),shape=(m,n));
+	else:
+		return csc_matrix((array(data),(array(row),array(column))),shape=(m,n));
 
 if __name__=="__main__":
 	if len(argv)!=2:

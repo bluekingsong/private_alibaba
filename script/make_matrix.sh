@@ -55,6 +55,17 @@ awk -v prefix="${output}" '{
 		if($3==0)	click[$2]++;
 		else if($3==1)	buy[$2]++;
 	}
+}END{
+	if(length(click)>0){
+		content=last;
+		for(i in click) content=content"\t"i" "click[i];
+		print content > prefix".clk";
+	}
+	if(length(buy)>0){
+		content=last;
+		for(i in buy) content=content"\t"i" "buy[i];
+		print content > prefix".buy";
+	}
 }' ${output}.brand ${output}.user $train_data;
 
 wc -l ${output}*
